@@ -3,13 +3,16 @@ import time
 
 def predict_batch(model, data, prompt, batch_size=30):
     ratings = []
-    for i in range(0, data.shape[0] - batch_size + 1):
-        review_id = data.iloc[i:i+batch_size]['review_id'].tolist()
-        review_text = data.iloc[i:i+batch_size]['review_text'].tolist()
-        user_input = "\n".join([f"{_id}|{txt}" for _id, txt in zip(review_id, review_text)])
-        prediction = model.invoke(prompt.format(user_input))
-        ratings.append(prediction.content)
-        time.sleep(1)
+    for i in range(0, data.shape[0] - batch_size + 1, batch_size):
+        try:
+            review_id = data.iloc[i:i+batch_size]['review_id'].tolist()
+            review_text = data.iloc[i:i+batch_size]['review_text'].tolist()
+            user_input = "\n".join([f"{_id}|{txt}" for _id, txt in zip(review_id, review_text)])
+            prediction = model.invoke(prompt.format(user_input))
+            ratings.append(prediction.content)
+            time.sleep(1)
+        except Exception as e:
+            print(f"Error while predicting batch: {e}")
     return ratings
 
 def parse_model_predicted_ratings(raw_predictions):
