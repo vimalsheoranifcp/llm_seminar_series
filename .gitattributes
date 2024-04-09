@@ -1,1 +1,2 @@
 session_2/data/reviews.csv filter=lfs diff=lfs merge=lfs -text
+session_2/data/raw/game_reviews/reviews.csv filter=lfs diff=lfs merge=lfs -text
